@@ -1,316 +1,152 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  closestCenter,
-} from "@dnd-kit/core";
-import { Plus, Trash2, Edit3, Save, RotateCcw } from "lucide-react";
+import { Plus, Trophy } from "lucide-react";
 import Header from "@/components/Header";
-import TierRow, { type TierData } from "@/components/TierRow";
-import DraggableNerdola from "@/components/DraggableNerdola";
-import { nerdolas, type Nerdola } from "@/data/nerdolas";
+import TierListCard from "@/components/TierListCard";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-const defaultTiers: TierData[] = [
-  { id: "s", label: "S", color: "hsl(0, 100%, 65%)", nerdolas: [] },
-  { id: "a", label: "A", color: "hsl(30, 100%, 55%)", nerdolas: [] },
-  { id: "b", label: "B", color: "hsl(50, 100%, 55%)", nerdolas: [] },
-  { id: "c", label: "C", color: "hsl(150, 100%, 45%)", nerdolas: [] },
-  { id: "d", label: "D", color: "hsl(220, 60%, 50%)", nerdolas: [] },
-];
+  getTierLists,
+  deleteTierList,
+  type SavedTierList,
+} from "@/lib/tierListStorage";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 const TierList = () => {
-  const [tierName, setTierName] = useState("Minha Tier List");
-  const [tierDescription, setTierDescription] = useState("Ranking dos nerdolas mais lendários");
-  const [tiers, setTiers] = useState<TierData[]>(defaultTiers);
-  const [activeNerdola, setActiveNerdola] = useState<Nerdola | null>(null);
-  const [editingTierId, setEditingTierId] = useState<string | null>(null);
-  const [newTierLabel, setNewTierLabel] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
+  const [tierLists, setTierLists] = useState<SavedTierList[]>([]);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
-  );
+  useEffect(() => {
+    setTierLists(getTierLists());
+  }, []);
 
-  // Get nerdolas that are not in any tier
-  const availableNerdolas = nerdolas.filter(
-    (n) => !tiers.some((t) => t.nerdolas.includes(n.id))
-  );
-
-  const handleDragStart = (event: DragStartEvent) => {
-    const nerdola = nerdolas.find((n) => n.id === event.active.id);
-    setActiveNerdola(nerdola || null);
+  const handleDelete = (id: string) => {
+    deleteTierList(id);
+    setTierLists(getTierLists());
+    setDeleteId(null);
+    toast.success("Tier List deletada!");
   };
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-    setActiveNerdola(null);
-
-    if (!over) return;
-
-    const nerdolaId = active.id as string;
-    const targetTierId = over.id as string;
-
-    // Check if dropping on a tier
-    const targetTier = tiers.find((t) => t.id === targetTierId);
-    if (!targetTier) return;
-
-    // Check if already in this tier
-    if (targetTier.nerdolas.includes(nerdolaId)) return;
-
-    setTiers((prev) => {
-      // Remove from any existing tier
-      const updated = prev.map((tier) => ({
-        ...tier,
-        nerdolas: tier.nerdolas.filter((id) => id !== nerdolaId),
-      }));
-
-      // Add to target tier
-      return updated.map((tier) =>
-        tier.id === targetTierId
-          ? { ...tier, nerdolas: [...tier.nerdolas, nerdolaId] }
-          : tier
-      );
-    });
-  }, [tiers]);
-
-  const handleRemoveFromTier = (tierId: string, nerdolaId: string) => {
-    setTiers((prev) =>
-      prev.map((tier) =>
-        tier.id === tierId
-          ? { ...tier, nerdolas: tier.nerdolas.filter((id) => id !== nerdolaId) }
-          : tier
-      )
-    );
+  const handleCreateNew = () => {
+    navigate("/tierlist/editor");
   };
 
-  const handleEditTierLabel = (tierId: string) => {
-    const tier = tiers.find((t) => t.id === tierId);
-    if (tier) {
-      setNewTierLabel(tier.label);
-      setEditingTierId(tierId);
-    }
-  };
-
-  const handleSaveTierLabel = () => {
-    if (editingTierId && newTierLabel.trim()) {
-      setTiers((prev) =>
-        prev.map((tier) =>
-          tier.id === editingTierId
-            ? { ...tier, label: newTierLabel.trim() }
-            : tier
-        )
-      );
-    }
-    setEditingTierId(null);
-    setNewTierLabel("");
-  };
-
-  const handleAddTier = () => {
-    const newId = `tier-${Date.now()}`;
-    setTiers((prev) => [
-      ...prev,
-      { id: newId, label: "NEW", color: "hsl(280, 60%, 50%)", nerdolas: [] },
-    ]);
-  };
-
-  const handleDeleteTier = (tierId: string) => {
-    setTiers((prev) => prev.filter((t) => t.id !== tierId));
-  };
-
-  const handleReset = () => {
-    setTiers(defaultTiers);
-    setTierName("Minha Tier List");
-    setTierDescription("Ranking dos nerdolas mais lendários");
+  const handleEdit = (id: string) => {
+    navigate(`/tierlist/editor?id=${id}`);
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Title Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex-1">
-              {isEditing ? (
-                <div className="space-y-2">
-                  <Input
-                    value={tierName}
-                    onChange={(e) => setTierName(e.target.value)}
-                    className="text-2xl font-bold bg-muted"
-                    placeholder="Nome da Tier List"
-                  />
-                  <Input
-                    value={tierDescription}
-                    onChange={(e) => setTierDescription(e.target.value)}
-                    className="text-sm bg-muted"
-                    placeholder="Descrição"
-                  />
-                </div>
-              ) : (
-                <>
-                  <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-                    {tierName}
-                  </h1>
-                  <p className="text-muted-foreground mt-1">{tierDescription}</p>
-                </>
-              )}
-            </div>
+      {/* Hero Section */}
+      <section className="relative py-12 md:py-16 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/5 via-transparent to-transparent" />
+        <div className="absolute top-10 right-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditing(!isEditing)}
-              >
-                {isEditing ? <Save className="w-4 h-4 mr-2" /> : <Edit3 className="w-4 h-4 mr-2" />}
-                {isEditing ? "Salvar" : "Editar"}
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleReset}>
-                <RotateCcw className="w-4 h-4 mr-2" />
-                Resetar
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          {/* Tier Rows */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-2 mb-8"
-          >
-            {tiers.map((tier, index) => (
-              <motion.div
-                key={tier.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="relative group"
-              >
-                <TierRow
-                  tier={tier}
-                  nerdolas={nerdolas}
-                  onRemove={handleRemoveFromTier}
-                  onEditLabel={handleEditTierLabel}
-                />
-                {tiers.length > 1 && (
-                  <button
-                    onClick={() => handleDeleteTier(tier.id)}
-                    className="absolute -right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
-                )}
-              </motion.div>
-            ))}
-
-            {/* Add Tier Button */}
-            <Button
-              variant="outline"
-              className="w-full border-dashed"
-              onClick={handleAddTier}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Adicionar Tier
-            </Button>
-          </motion.div>
-
-          {/* Available Nerdolas Pool */}
+        <div className="container mx-auto px-4 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-card rounded-xl border border-border p-6"
+            className="text-center max-w-2xl mx-auto"
           >
-            <h2 className="text-lg font-semibold text-foreground mb-4">
-              Nerdolas Disponíveis
-            </h2>
-            <div className="flex flex-wrap gap-4 min-h-[80px]">
-              {availableNerdolas.length > 0 ? (
-                availableNerdolas.map((nerdola) => (
-                  <DraggableNerdola
-                    key={nerdola.id}
-                    nerdola={nerdola}
-                    isInPool
-                  />
-                ))
-              ) : (
-                <p className="text-muted-foreground text-sm italic">
-                  Todos os nerdolas foram classificados! 🎉
-                </p>
-              )}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/30 text-secondary text-sm font-medium mb-6">
+              <Trophy className="w-4 h-4" />
+              Crie rankings épicos
             </div>
-          </motion.div>
 
-          {/* Drag Overlay */}
-          <DragOverlay>
-            {activeNerdola && (
-              <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-primary shadow-lg">
-                <img
-                  src={activeNerdola.avatar}
-                  alt={activeNerdola.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-          </DragOverlay>
-        </DndContext>
-      </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Suas{" "}
+              <span className="text-secondary neon-text-magenta">Tier Lists</span>
+            </h1>
 
-      {/* Edit Tier Label Dialog */}
-      <Dialog open={!!editingTierId} onOpenChange={() => setEditingTierId(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar Nome do Tier</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Nome do Tier</Label>
-              <Input
-                value={newTierLabel}
-                onChange={(e) => setNewTierLabel(e.target.value)}
-                placeholder="Ex: S, A, B..."
-                maxLength={10}
-              />
-            </div>
-            <Button onClick={handleSaveTierLabel} className="w-full">
-              Salvar
+            <p className="text-lg text-muted-foreground mb-8">
+              Crie, salve e compartilhe seus rankings dos nerdolas!
+            </p>
+
+            <Button
+              onClick={handleCreateNew}
+              size="lg"
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Criar Nova Tier List
             </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Tier Lists Grid */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          {tierLists.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {tierLists.map((tierList, index) => (
+                <TierListCard
+                  key={tierList.id}
+                  tierList={tierList}
+                  index={index}
+                  onClick={() => handleEdit(tierList.id)}
+                  onDelete={(e) => {
+                    e.stopPropagation();
+                    setDeleteId(tierList.id);
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-16"
+            >
+              <div className="text-6xl mb-4">📊</div>
+              <h2 className="text-xl font-semibold text-foreground mb-2">
+                Nenhuma Tier List ainda
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Crie sua primeira tier list e comece a rankear os nerdolas!
+              </p>
+              <Button onClick={handleCreateNew} variant="outline">
+                <Plus className="w-4 h-4 mr-2" />
+                Criar Tier List
+              </Button>
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Deletar Tier List?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. A tier list será permanentemente removida.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteId && handleDelete(deleteId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Deletar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
