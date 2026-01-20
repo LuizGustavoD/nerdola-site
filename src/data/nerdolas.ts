@@ -27,8 +27,8 @@ export const nerdolas: Nerdola[] = [
       "Ama One Piece",
       "Nasceu nos EUA (Não tem sequer uma memória de lá)",
       "Tem 1700+ horas de R6 (não se orgulha disso)",
-      "Estuda TI (como 80% do grupo)"
-      "Não tem apêndice",
+      "Estuda TI (como 80% do grupo)",
+      "Não tem apêndice"
     ],
     phrases: [
       "Não tenho mais comida, não tenho mais nada, terei de vender skins de CS",
