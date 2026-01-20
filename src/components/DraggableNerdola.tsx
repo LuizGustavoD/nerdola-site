@@ -31,12 +31,14 @@ const DraggableNerdola = ({ nerdola, onRemove, isInPool }: DraggableNerdolaProps
       {...attributes}
       {...listeners}
       className={`relative group draggable-item ${
-        isDragging ? "opacity-50 z-50" : ""
+        isDragging ? "opacity-50 z-50 scale-110" : ""
       }`}
     >
       <div
-        className={`w-14 h-14 md:w-16 md:h-16 rounded-lg overflow-hidden border-2 border-border bg-card ${
-          isInPool ? "hover:border-primary" : ""
+        className={`w-16 h-16 md:w-[72px] md:h-[72px] rounded-xl overflow-hidden border-2 bg-card shadow-lg transition-all ${
+          isInPool 
+            ? "border-border/50 hover:border-primary hover:shadow-primary/25" 
+            : "border-border/30 hover:border-white/50"
         }`}
       >
         <img
@@ -52,12 +54,12 @@ const DraggableNerdola = ({ nerdola, onRemove, isInPool }: DraggableNerdolaProps
             e.stopPropagation();
             onRemove();
           }}
-          className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg"
         >
-          <X className="w-3 h-3" />
+          <X className="w-3.5 h-3.5" />
         </button>
       )}
-      <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-muted-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+      <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-muted-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 px-1.5 py-0.5 rounded backdrop-blur-sm">
         {nerdola.name}
       </span>
     </div>

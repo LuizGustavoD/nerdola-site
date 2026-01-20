@@ -49,12 +49,11 @@ const TierRow = ({ tier, nerdolas, onRemove, onEditLabel, onChangeColor }: TierR
     .filter(Boolean) as Nerdola[];
 
   return (
-    <div className="tier-row">
-      <div className="relative group/tier">
+    <div className="tier-row group/row">
+      <div className="relative tier-label" style={{ backgroundColor: tier.color }}>
         <button
           onClick={() => onEditLabel(tier.id)}
-          className="tier-label hover:opacity-80 transition-opacity"
-          style={{ backgroundColor: tier.color }}
+          className="w-full h-full flex items-center justify-center hover:opacity-80 transition-opacity"
         >
           {tier.label}
         </button>
@@ -62,25 +61,26 @@ const TierRow = ({ tier, nerdolas, onRemove, onEditLabel, onChangeColor }: TierR
           <Popover>
             <PopoverTrigger asChild>
               <button
-                className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-background border border-border flex items-center justify-center opacity-0 group-hover/tier:opacity-100 transition-opacity hover:bg-muted"
+                className="absolute top-1 right-1 w-7 h-7 rounded-lg bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all hover:bg-black/60 hover:scale-110"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Palette className="w-3 h-3" />
+                <Palette className="w-4 h-4 text-white" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-3" align="start">
+            <PopoverContent className="w-auto p-4 bg-card border-border" align="start" side="right" sideOffset={8}>
+              <p className="text-sm font-medium text-foreground mb-3">Escolha uma cor</p>
               <div className="grid grid-cols-4 gap-2">
                 {presetColors.map((color) => (
                   <button
                     key={color}
                     onClick={() => onChangeColor(tier.id, color)}
-                    className="w-8 h-8 rounded-lg border-2 border-border hover:border-primary transition-colors"
+                    className="w-9 h-9 rounded-lg border-2 border-transparent hover:border-white hover:scale-110 transition-all shadow-md"
                     style={{ backgroundColor: color }}
                   />
                 ))}
               </div>
-              <div className="mt-3 pt-3 border-t border-border">
-                <label className="text-xs text-muted-foreground block mb-1">
+              <div className="mt-4 pt-4 border-t border-border">
+                <label className="text-xs text-muted-foreground block mb-2">
                   Cor personalizada
                 </label>
                 <input
@@ -88,10 +88,9 @@ const TierRow = ({ tier, nerdolas, onRemove, onEditLabel, onChangeColor }: TierR
                   defaultValue="#ff0000"
                   onChange={(e) => {
                     const hex = e.target.value;
-                    // Convert hex to HSL-like format
                     onChangeColor(tier.id, hex);
                   }}
-                  className="w-full h-8 rounded cursor-pointer"
+                  className="w-full h-10 rounded-lg cursor-pointer border-0"
                 />
               </div>
             </PopoverContent>
