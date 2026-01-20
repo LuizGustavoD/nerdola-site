@@ -4,6 +4,9 @@ import carlosboludoAvatar from "@/assets/avatars/carlosboludo.png";
 import laranjacAvatar from "@/assets/avatars/laranjac.png";
 import happygamesAvatar from "@/assets/avatars/happygames.png";
 
+// Placeholder for new nerdolas without custom avatars
+const placeholderAvatar = "https://api.dicebear.com/7.x/pixel-art/svg?seed=";
+
 export interface Nerdola {
   id: string;
   name: string;
@@ -94,5 +97,101 @@ export const nerdolas: Nerdola[] = [
       "O importante é se divertir!"
     ],
     nerdLevel: 8
+  },
+  {
+    id: "lucasbelline",
+    name: "Lucas Belline",
+    avatar: `${placeholderAvatar}lucas-belline`,
+    description: "O estrategista do grupo. Sempre pensando três jogadas à frente, seja no xadrez ou nos games competitivos. Analítico e focado.",
+    curiosities: [
+      "Alcançou rank Diamante em 4 jogos diferentes",
+      "Tem planilhas para tudo na vida",
+      "Adora explicar teorias de jogos"
+    ],
+    phrases: [
+      "Calma, tenho um plano",
+      "A matemática não mente"
+    ],
+    nerdLevel: 8
+  },
+  {
+    id: "davibelline",
+    name: "Davi Belline",
+    avatar: `${placeholderAvatar}davi-belline`,
+    description: "Irmão mais novo do Lucas, mas não menos competitivo. Especialista em speedruns e quebrar recordes impossíveis.",
+    curiosities: [
+      "Detém 3 recordes mundiais em speedrun",
+      "Consegue jogar de olhos fechados",
+      "Tem reflexos mais rápidos que um gato"
+    ],
+    phrases: [
+      "Isso aí é fácil, olha só",
+      "Novo recorde pessoal!"
+    ],
+    nerdLevel: 9
+  },
+  {
+    id: "pedromendes",
+    name: "Pedro Mendes",
+    avatar: `${placeholderAvatar}pedro-mendes`,
+    description: "O filósofo gamer. Questiona a existência enquanto joga RPG. Conhecido por suas análises profundas sobre narrativas de jogos.",
+    curiosities: [
+      "Já escreveu 50 páginas de análise sobre Dark Souls",
+      "Coleciona livros de lore de jogos",
+      "Sonha em criar seu próprio RPG"
+    ],
+    phrases: [
+      "Mas você já parou pra pensar...",
+      "A história é mais profunda do que parece"
+    ],
+    nerdLevel: 7
+  },
+  {
+    id: "urbano",
+    name: "Urbano",
+    avatar: `${placeholderAvatar}urbano`,
+    description: "O builder supremo. Se existe um modo criativo, ele domina. Especialista em Minecraft e jogos de construção.",
+    curiosities: [
+      "Construiu uma cidade inteira no Minecraft",
+      "Tem mais de 5000 horas em jogos sandbox",
+      "Já foi contratado para construir mapas custom"
+    ],
+    phrases: [
+      "Espera, preciso só terminar essa construção",
+      "Falta só mais um detalhezinho"
+    ],
+    nerdLevel: 8
+  },
+  {
+    id: "daark",
+    name: "Daark",
+    avatar: `${placeholderAvatar}daark`,
+    description: "O misterioso do grupo. Joga sempre de personagens sombrios e tem uma coleção invejável de skins raras.",
+    curiosities: [
+      "Nunca mostrou o rosto nas calls",
+      "Tem todas as skins exclusivas de eventos",
+      "Só joga depois das 22h"
+    ],
+    phrases: [
+      "...",
+      "Interessante"
+    ],
+    nerdLevel: 9
+  },
+  {
+    id: "alvaro",
+    name: "Alvaro",
+    avatar: `${placeholderAvatar}alvaro`,
+    description: "O social gamer. Conecta todo mundo e organiza as sessions. Sem ele, o grupo não jogaria junto.",
+    curiosities: [
+      "Admin de 15 servidores do Discord",
+      "Conhece todo mundo da comunidade",
+      "Nunca perde uma game night"
+    ],
+    phrases: [
+      "Bora marcar pra hoje?",
+      "Chama mais gente!"
+    ],
+    nerdLevel: 6
   }
 ];
