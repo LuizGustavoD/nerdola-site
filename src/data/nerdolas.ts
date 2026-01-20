@@ -22,15 +22,17 @@ export const nerdolas: Nerdola[] = [
     id: "feckton",
     name: "Feckt0n",
     avatar: fecktonAvatar,
-    description: "O nerdola original. Mestre em programação e debates sobre qual é o melhor editor de código. Defensor fervoroso do modo escuro e das mecânicas de café.",
+    description: "O Nerdola da capital (São Paulo). Passou pela miséria, fome, Mathiensen e Zona Leste. Carrega uma personalidade explosiva, enche o saco em qualquer discussão sem sentido e acaba por cair em ragebaits facilmente.",
     curiosities: [
-      "Já programou 48 horas seguidas",
-      "Tem mais de 1000 horas em jogos de puzzle",
-      "Nunca usou modo claro na vida"
+      "Ama One Piece",
+      "Nasceu nos EUA (Não tem sequer uma memória de lá)",
+      "Tem 1700+ horas de R6 (não se orgulha disso)",
+      "Estuda TI (como 80% do grupo)"
+      "Não tem apêndice",
     ],
     phrases: [
-      "É só um bug, relaxa",
-      "Funciona na minha máquina"
+      "Não tenho mais comida, não tenho mais nada, terei de vender skins de CS",
+      "Eu não consigo identificar meu erro, com todo respeito"
     ],
     nerdLevel: 9
   },
