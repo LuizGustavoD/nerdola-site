@@ -63,7 +63,7 @@ const NerdolaModal = ({
             {/* Content */}
             <div className="p-6 space-y-6">
               <div>
-                <h2 className="text-3xl font-bold text-foreground mb-2 text-justify">
+                <h2 className="font-bold text-foreground mb-2 text-justify text-6xl">
                   {nerdola.name}
                 </h2>
                 <p className="text-muted-foreground leading-relaxed">
