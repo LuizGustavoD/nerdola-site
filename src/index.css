@@ -123,23 +123,23 @@
   }
 
   .tier-row {
-    @apply flex items-stretch gap-2 min-h-[80px] rounded-lg overflow-hidden;
+    @apply flex items-stretch gap-0 min-h-[80px] rounded-xl overflow-visible bg-card/50 border border-border/50;
   }
 
   .tier-label {
-    @apply flex items-center justify-center w-16 md:w-24 font-bold text-lg md:text-xl shrink-0;
+    @apply flex items-center justify-center w-20 md:w-28 font-bold text-base md:text-xl shrink-0 rounded-l-xl text-center px-2;
   }
 
   .tier-content {
-    @apply flex-1 flex flex-wrap gap-2 p-2 bg-muted/50 rounded-r-lg min-h-[80px] items-center;
+    @apply flex-1 flex flex-wrap gap-3 p-3 bg-muted/30 rounded-r-xl min-h-[80px] items-center;
   }
 
   .draggable-item {
-    @apply cursor-grab active:cursor-grabbing transition-transform;
+    @apply cursor-grab active:cursor-grabbing transition-all duration-200;
   }
 
   .draggable-item:hover {
-    @apply scale-105;
+    @apply scale-110 z-10;
   }
 }
 
