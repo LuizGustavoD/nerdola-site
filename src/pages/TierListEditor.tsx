@@ -209,6 +209,14 @@ const TierListEditor = () => {
     setNewTierLabel("");
   };
 
+  const handleChangeTierColor = (tierId: string, color: string) => {
+    setTiers((prev) =>
+      prev.map((tier) =>
+        tier.id === tierId ? { ...tier, color } : tier
+      )
+    );
+  };
+
   const handleAddTier = () => {
     const newId = `tier-${Date.now()}`;
     setTiers((prev) => [
@@ -341,6 +349,7 @@ const TierListEditor = () => {
                     nerdolas={nerdolas}
                     onRemove={handleRemoveFromTier}
                     onEditLabel={handleEditTierLabel}
+                    onChangeColor={handleChangeTierColor}
                   />
                   {tiers.length > 1 && (
                     <button
