@@ -104,11 +104,11 @@ export const nerdolas: Nerdola[] = [
     id: "lucasbelline",
     name: "Lucas Belline",
     avatar: `${placeholderAvatar}lucas-belline`,
-    description: "O estrategista do grupo. Sempre pensando três jogadas à frente, seja no xadrez ou nos games competitivos. Analítico e focado.",
+    description: " o Adm palhaço, um ragebaiter que sempre está rindo e remixando suas frases épicamente (ou autistamente), especialista em Roblox e Knuckles The Equidna",
     curiosities: [
-      "Alcançou rank Diamante em 4 jogos diferentes",
-      "Tem planilhas para tudo na vida",
-      "Adora explicar teorias de jogos"
+      "Coleciona objetos de Knuckles",
+      "Adora Kamen Ridera",
+      "Odeia Palmito"
     ],
     phrases: [
       "Calma, tenho um plano",
